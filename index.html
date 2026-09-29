@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Spoor Partner Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Sign in -->
+  <main id="login" class="login" hidden>
+    <div class="login-card">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"></span>Spoor <span class="brand-sub">Partner Portal</span></div>
+      <h1>Welcome, partner</h1>
+      <p class="muted">Enter the access code you received from the Spoor partner team.</p>
+      <form id="login-form" autocomplete="off">
+        <label for="code">Access code</label>
+        <input id="code" name="code" type="text" required spellcheck="false" autocapitalize="characters">
+        <p id="login-error" class="error" role="alert" hidden>That code was not recognised. Check it and try again.</p>
+        <button type="submit" class="btn btn-primary">Sign in</button>
+      </form>
+      <p class="muted small">No code yet? Email <a id="login-contact" href="#"></a></p>
+    </div>
+  </main>
+
+  <!-- Portal -->
+  <div id="app" hidden>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="#/why"><span class="brand-mark" aria-hidden="true"></span>Spoor <span class="brand-sub">Partner Portal</span></a>
+        <div class="topbar-right">
+          <span id="segment-pill" class="pill"></span>
+          <button id="logout" class="btn btn-ghost">Sign out</button>
+        </div>
+      </div>
+      <nav id="nav" class="nav" aria-label="Sections"></nav>
+    </header>
+    <main id="content" class="content"></main>
+    <footer class="footer">Spoor partner material. For use in partner bids and proposals only.</footer>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
