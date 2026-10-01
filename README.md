@@ -1,14 +1,15 @@
 # Spoor Partner Portal
 
-First version of the Spoor Partner Portal, built from the core content plan.
-A static site (plain HTML, CSS and JavaScript, no build step) that runs on GitHub Pages.
+The Spoor Partner Portal: a static site (plain HTML, CSS and JavaScript, no build step)
+that runs on GitHub Pages.
 
 ## How it works
 
 - Partners sign in with an access code. The code decides which segment they see:
-  **Demand Shapers** (consultancies) or **Access Providers** (hardware and installers).
-- Every partner sees the same four sections: Why Spoor, Bid with Spoor, Partner benefits, Get in touch.
-- Assets are tagged `both`, `ds` or `ap`, so each segment only sees what applies to them.
+  **Consultancies** (key `ds`) or **Hardware and installation partners** (key `ap`).
+- Every partner sees the same five sections: Why Spoor, The product, Bid with Spoor,
+  Partner benefits, Get in touch.
+- Content blocks and assets are tagged `both`, `ds` or `ap`, so each segment only sees what applies to them.
 - The request form opens a pre-filled email to the partner contact.
 
 ## Editing content
@@ -20,14 +21,46 @@ All content lives in [`config.js`](config.js):
 | Access codes | `accessCodes` |
 | Partner contact name and email | `contact` |
 | Section intros per segment | `sections[].intro` |
+| Content blocks shown above the assets | `sections[].blocks` |
 | Assets (title, audience, description) | `sections[].assets` |
 | Tender text pack copy | the `snippets` on "Tender text pack" |
+| Buttons, labels and other interface text | `ui` |
+| Image sizes (optional, stops the page jumping while images load) | `imageSizes` |
+
+Images and videos live in [`assets/`](assets). Refer to them as `assets/name.jpg`
+(no leading slash, so the site also works under the GitHub Pages sub-path).
+
+### Content blocks
+
+Every block has a `type` and a `for` (`"ds"`, `"ap"` or `"both"`). Most take an optional
+`heading`. Optional on every block: `sub: true` (continues the block before it: closer
+spacing, smaller heading, left out of the table of contents), `tag` (a small orange label
+next to the heading) and `note` (small print under the block).
+
+| `type` | Fields |
+| --- | --- |
+| `hero` | `image`, `alt`, `heading`, `text` |
+| `prose` | `paragraphs[]`; optional `image`, `alt`, `caption`, `imageSide` (`"left"` or `"right"`), `italic` |
+| `toggle` | `options[]`, each `{ label, image, alt, heading, points[], note }` |
+| `tabs` | `tabs[]`, each `{ id, label, blocks[] }`. Link to a tab with `#/section?tab=id` |
+| `video` | `src`, `poster`, `alt`, `caption` |
+| `picker` | `steps[]` each `{ question, answers[{ label, value }] }`, `results{ key: { heading, text, link, linkLabel, note } }`, `resolve` (answer values joined with `+` mapped to a result key; leave out for one question, where the answer value is the key) |
+| `stats` | `items[{ value, suffix, label }]`; optional `caption`, `image` (background) |
+| `bars` | `items[{ label, value }]`, `max` (default 100), `suffix`, `caption` |
+| `cards` | `columns` (1, 2 or 3), `items[{ title, text, tag }]`, optional `intro` |
+| `table` | `columns[]`, `rows[][]` |
+| `accordion` | `items[{ title, text }]` |
+| `checklist` | `intro`, `items[{ label, placeholder }]`, `buttonLabel`, `subject`; optional `collapsed` and `revealLabel` to show only a button at first |
+| `callout` | `text` |
+| `steps` | `items[{ title, text }]` |
+
+A section with `toc: true` gets an "On this page" list of its block headings.
 
 To publish an asset, add the file to the [`files/`](files) folder and set its `file` field,
 for example `file: "files/spoor-overview-deck.pptx"`. Assets without a file show as "Coming soon".
 
-To add a segment later (for example Legitimacy Partners), add it to `segments`, give it an
-access code, add an `intro` for it in each section, and tag its assets with its key.
+To add a segment later, add it to `segments`, give it an access code, add an `intro` for it
+in each section, and tag its blocks and assets with its key.
 
 ## Access and security (read this)
 

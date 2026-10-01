@@ -6,14 +6,17 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Spoor Partner Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta name="theme-color" content="#FAF5F0" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#17052D" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&family=Geist:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <!-- Sign in -->
   <main id="login" class="login" hidden>
     <div class="login-card">
-      <div class="brand"><span class="brand-mark" aria-hidden="true"></span>Spoor <span class="brand-sub">Partner Portal</span></div>
+      <div class="brand brand-lg"><span class="logo-chip"><img class="logo" src="assets/spoor-logo.svg" alt="Spoor" width="126" height="28"></span><span class="brand-sub">Partner Portal</span></div>
       <h1>Welcome, partner</h1>
       <p class="muted">Enter the access code you received from the Spoor partner team.</p>
       <form id="login-form" autocomplete="off">
@@ -30,7 +33,7 @@
   <div id="app" hidden>
     <header class="topbar">
       <div class="topbar-inner">
-        <a class="brand" href="#/why"><span class="brand-mark" aria-hidden="true"></span>Spoor <span class="brand-sub">Partner Portal</span></a>
+        <a class="brand" href="#/why"><span class="logo-chip"><img class="logo" src="assets/spoor-logo.svg" alt="Spoor" width="126" height="28"></span><span class="brand-sub">Partner Portal</span></a>
         <div class="topbar-right">
           <span id="segment-pill" class="pill"></span>
           <button id="logout" class="btn btn-ghost">Sign out</button>
