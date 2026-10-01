@@ -135,6 +135,8 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px
 .card h2, .card h3 { font-size: 1.1rem; }
 .card p { margin: 0; color: var(--muted); }
 .card .actions { margin-top: auto; padding-top: 8px; }
+.card[id] { scroll-margin-top: calc(var(--topbar-h) + 20px); }
+.card[id]:focus { outline: 3px solid var(--accent); outline-offset: 3px; }
 
 /* Snippets */
 .snippets { display: grid; gap: 10px; margin-top: 6px; }
@@ -155,6 +157,13 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px
 .block-intro { color: var(--muted); margin: -4px 0 16px; max-width: 720px; }
 .block-note { color: var(--muted); font-size: .875rem; margin: 12px 0 0; }
 .caption { color: var(--muted); font-size: .875rem; margin: 12px 0 0; }
+
+/* Links out of a block */
+.block-link { margin: 16px 0 0; }
+.cta-link { display: inline-flex; align-items: center; gap: .45rem; font-weight: 600; padding: .55rem 1rem; border-radius: 10px; background: var(--highlight); color: var(--highlight-text); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.cta-link:hover { text-decoration-thickness: 2px; filter: brightness(1.04); }
+.cta-arrow { font-size: 1.1em; line-height: 1; text-decoration: none; }
+.stats.has-bg .cta-link:focus-visible { outline-color: var(--highlight); }
 
 /* Hero */
 .hero { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--surface-2); }

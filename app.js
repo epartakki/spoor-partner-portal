@@ -90,6 +90,7 @@
     // Same section, new query (e.g. a tab link): update in place.
     if (section.id === current) {
       if (params.has("tab")) applyTab(params.get("tab"), true);
+      else if (params.has("to")) scrollToId(params.get("to"), true);
       else window.scrollTo(0, 0);
       return;
     }
@@ -141,6 +142,15 @@
     bind(content, seg);
     window.scrollTo(0, 0);
     if (params.has("tab")) applyTab(params.get("tab"), true);
+    if (params.has("to")) scrollToId(params.get("to"), false);
+  }
+
+  // Scroll to an element on the page, e.g. #/bid?to=case-studies
+  function scrollToId(id, smooth) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: smooth && !reduceMotion() ? "smooth" : "auto", block: "start" });
+    el.focus({ preventScroll: true });
   }
 
   function overview(seg) {
@@ -188,8 +198,11 @@
         ? `<div class="block-head"><h${level} id="${id}" class="block-title ${cls}" tabindex="-1">${esc(b.heading)}</h${level}>${b.tag ? `<span class="tag tag-highlight">${esc(b.tag)}</span>` : ""}</div>`
         : "",
     };
+    ctx.link = () => linkHtml(b.link);
     const note = b.note ? `<p class="block-note">${esc(b.note)}</p>` : "";
-    return `<section class="block block-${b.type} ${b.sub ? "sub" : ""}" data-b="${key}" data-inner="${ctx.inner}">${fn(b, ctx)}${note}</section>`;
+    // Stats place their link inside the panel; other blocks get it underneath.
+    const link = b.type === "stats" ? "" : ctx.link();
+    return `<section class="block block-${b.type} ${b.sub ? "sub" : ""}" data-b="${key}" data-inner="${ctx.inner}">${fn(b, ctx)}${link}${note}</section>`;
   }
 
   const img = (src, alt, extra = 'loading="lazy"') => {
@@ -197,6 +210,11 @@
     const dims = size ? `width="${size[0]}" height="${size[1]}"` : "";
     return `<img src="${esc(src)}" alt="${esc(alt || "")}" ${dims} ${extra} decoding="async">`;
   };
+  function linkHtml(l) {
+    if (!l || !l.href) return "";
+    const ext = l.newTab ? ` target="_blank" rel="noopener"` : "";
+    return `<p class="block-link"><a class="cta-link" href="${esc(l.href)}"${ext}>${esc(l.label || l.href)}<span class="cta-arrow" aria-hidden="true">${l.newTab ? "&#8599;" : "&#8594;"}</span>${l.newTab ? `<span class="sr-only"> ${esc(U.newTab)}</span>` : ""}</a></p>`;
+  }
   const h = (level, text, cls = "") => `<h${level} class="${cls}">${esc(text)}</h${level}>`;
   const tagHtml = (t) => `<span class="tag ${t === "Live" ? "tag-live" : "tag-highlight"}">${esc(t)}</span>`;
 
@@ -269,6 +287,7 @@
               </div>`).join("")}
           </div>
           ${b.caption ? `<p class="caption">${esc(b.caption)}</p>` : ""}
+          ${c.link()}
         </div>
       </div>`,
 
@@ -433,7 +452,7 @@
       : "";
 
     return `
-      <article class="card ${hasSnippets ? "wide" : ""}" ${hasSnippets ? 'data-snippets="1"' : ""}>
+      <article class="card ${hasSnippets ? "wide" : ""}" ${a.id ? `id="${esc(a.id)}" tabindex="-1"` : ""} ${hasSnippets ? 'data-snippets="1"' : ""}>
         <div class="card-meta">${tags}</div>
         <h3>${esc(a.title)}</h3>
         <p>${esc(a.description)}</p>
@@ -479,8 +498,13 @@
       </div>`;
   }
 
-  const mailto = (subject, body) =>
-    `mailto:${P.contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  // Every form sends to contact.requestEmail with a subject that says where it came from.
+  function mailto(request, seg, body) {
+    const page = (P.sections.find((s) => s.id === current) || {}).title || "";
+    const subject = fill(U.mailSubject, { request, segment: P.segments[seg].name, page });
+    const to = P.contact.requestEmail || P.contact.email;
+    return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`${body}\n\n${U.sentFrom}: ${page}`)}`;
+  }
 
   // ---------- Behaviour ----------
   function observe(els, opts, onEnter, once = true) {
@@ -641,7 +665,7 @@
         err.hidden = lines.length > 0;
         if (!lines.length) return;
         const body = [`${U.partnerType}: ${P.segments[seg].name}`, "", ...lines].join("\n");
-        location.href = mailto(b.subject, body);
+        location.href = mailto(b.subject, seg, body);
       });
     });
 
@@ -695,7 +719,7 @@
         e.preventDefault();
         const v = (id) => root.querySelector(id).value.trim();
         const type = v("#r-type");
-        const subject = fill(U.requestSubject, { type, org: v("#r-org") });
+        const request = fill(U.requestSubject, { type, org: v("#r-org") });
         const body = [
           `${U.requestName}: ${v("#r-name")}`,
           `${U.requestOrg}: ${v("#r-org")}`,
@@ -705,7 +729,7 @@
           "",
           v("#r-msg"),
         ].filter((l, i, arr) => l !== "" || arr[i - 1] !== "").join("\n");
-        location.href = mailto(subject, body);
+        location.href = mailto(request, seg, body);
       });
     }
   }

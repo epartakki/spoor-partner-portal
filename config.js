@@ -23,7 +23,7 @@ const SCOPING_CHECKLIST = {
     { label: "Monitoring period", placeholder: "e.g. 12 months from first power" },
   ],
   buttonLabel: "Send a scoping request",
-  subject: "Scoping request from the partner portal",
+  subject: "Scoping request",
 };
 
 window.PORTAL = {
@@ -42,7 +42,8 @@ window.PORTAL = {
   contact: {
     name: "Partner team",          // TODO: named partner contact
     role: "Partnerships, Spoor",
-    email: "partners@spoor.ai",    // TODO: confirm address
+    email: "partners@spoor.ai",    // TODO: confirm address. Shown on the site.
+    requestEmail: "hanne@spoor.ai", // Where the request forms and checklists send to.
   },
 
   // Pixel sizes of images, so the page does not jump while they load.
@@ -93,7 +94,11 @@ window.PORTAL = {
     requestPlaceholder: "Project, client, tender reference and what you need from us",
     requestSubmit: "Send request",
     requestNote: "This opens an email to the partner team with your request filled in.",
-    requestSubject: "Partner request: {type} ({org})",
+    // Email subject for every form: {request} is the form's own subject.
+    mailSubject: "Spoor Partner Portal: {request} | {segment} | {page}",
+    requestSubject: "{type} request from {org}",
+    sentFrom: "Sent from",
+    newTab: "(opens in a new tab)",
   },
 
   sections: [
@@ -162,7 +167,7 @@ window.PORTAL = {
           items: [
             { title: "Monitoring in your scope, without building it", text: "Offer continuous camera-based monitoring as part of your own service. Spoor runs the hardware, AI and data. You design the study, interpret the results and advise your client." },
             { title: "Temporal data that enriches your methods", text: "Continuous monitoring fills the gaps between survey days: seasons, weather and time of day. It adds to your scope rather than replacing any of it." },
-            { title: "Data that fits your workflow", text: "CSV files built for ecologists and statisticians, a video and image for every detection, and an audit trail you can stand behind in front of a regulator." },
+            { title: "Data that fits your workflow", text: "Data built for ecologists and statisticians, a video and image for every detection, and an audit trail you can stand behind in front of a regulator." },
             { title: "Deals flow both ways", text: "Over half of our pipeline involves partners, and we refer work to the partners we trust." },
           ],
         },
@@ -187,12 +192,14 @@ window.PORTAL = {
             { value: 8, suffix: "+", label: "collisions per turbine per year predicted by the pre-construction models" },
           ],
           caption: "Source: Cook, A. 2026. Review of Aberdeen Bay Collision Monitoring Data. The Biodiversity Consultancy.",
+          link: { href: "#/bid?to=case-studies", label: "Read the case studies", newTab: true },
         },
         {
           type: "cards",
           for: "both",
           heading: "Selected projects",
           columns: 3,
+          link: { href: "#/bid?to=case-studies", label: "Read the case studies", newTab: true },
           items: [
             { title: "SeaMe, RWE Kaskasi (Germany)", text: "AI-based bird monitoring at the Kaskasi offshore wind farm in the German North Sea, as part of RWE's SeaMe programme. Our optical data is combined with acoustic and radar monitoring." },
             { title: "Hafslund (Norway, onshore)", text: "A 12-month pre-construction baseline for birds and bats, informing the EIA, turbine siting and shutdown protocols." },
@@ -263,8 +270,8 @@ window.PORTAL = {
             {
               question: "When is the monitoring?",
               answers: [
-                { label: "Before construction", value: "pre" },
-                { label: "After construction", value: "post" },
+                { label: "Pre-construction", value: "pre" },
+                { label: "Post-construction", value: "post" },
               ],
             },
             {
@@ -323,8 +330,8 @@ window.PORTAL = {
                   heading: "How it works",
                   paragraphs: [
                     "A camera at a fixed vantage point records the same volume of air continuously. Inside that volume, every bird is detected, tracked and counted, not sampled. That is up to 27 million cubic metres per camera, depending on the size of the bird.",
-                    "One camera gives a direction, not a distance, so AAM reports flight height bands rather than exact positions. In BTO's validation at Aberdeen, height uncertainty was 5 to 10%.",
-                    "Onshore, cameras sit on masts, turbines or powered vantage points such as a powerbox or a solar trailer. Offshore, they sit on buoys, substations, foundations and floating platforms, where we correct for wave motion. This has been tested at Hywind Tampen and Sørlige Nordsjø II.",
+                    "One camera gives a direction, not a distance, so AAM reports flight height bands rather than exact positions.",
+                    "Onshore, cameras sit on masts, turbines or powered vantage points such as a powerbox or a solar trailer. Offshore, they sit on buoys, substations, foundations and floating platforms, where we correct for wave motion.",
                   ],
                 },
                 {
@@ -345,14 +352,6 @@ window.PORTAL = {
                     "A video clip and an image for every detection, so every number can be checked and re-classified by your own ecologists.",
                     "Height distributions by height band, adjusted for the volume of air watched at each height, and analytics for time of day, observation rate, and activity by wind speed and direction.",
                     "Species from expert review of a random sample of 2 to 5% across the full period, or the most detailed level we are sure of, such as \"large gull\".",
-                  ],
-                },
-                {
-                  type: "accordion",
-                  heading: "Good to know",
-                  items: [
-                    { title: "A detection is a sighting, not a unique bird", text: "A bird that leaves and comes back is counted again, as in any fixed camera survey. We report activity measures ecologists already use, such as bird minutes, density and the most birds of one type seen at once." },
-                    { title: "Where AAM is used", text: "Mostly before construction, for site screening, EIAs and permits. Also on operating sites, to show compliance or to support repowering decisions." },
                   ],
                 },
               ],
@@ -385,14 +384,6 @@ window.PORTAL = {
                     "Every detection inside the rotor swept sphere is labelled by hand, not sampled. TIM also includes all of AAM's activity data for the same cameras.",
                   ],
                 },
-                {
-                  type: "accordion",
-                  heading: "Good to know",
-                  items: [
-                    { title: "Three volumes, three names", text: "The collision risk zone is the air the cameras watch. The rotor swept volume is the sphere the blades can reach as the turbine turns and yaws. The rotor swept plane is the flat disc the blades sweep at one moment, which needs live turbine data to calculate." },
-                    { title: "Fixed foundations only", text: "TIM needs both camera positions to stay fixed. On floating turbines, AAM is the option." },
-                  ],
-                },
               ],
             },
           ],
@@ -403,7 +394,7 @@ window.PORTAL = {
           heading: "Night-time monitoring and bats",
           tag: "Being piloted now",
           paragraphs: [
-            "Infrared panels light the airspace so the cameras keep detecting after dark. Offshore we chose infrared over thermal cameras: it costs less and gives better resolution. Night detections run on the same pipeline as daytime, with a model trained on infrared.",
+            "Infrared panels light the airspace so the cameras keep detecting after dark.",
             "It combines well with acoustics. Cameras show flight paths, heights and behaviour around the turbine, while acoustic surveys add species detail. Our platform takes acoustic and radar data alongside video, as at RWE's Kaskasi wind farm.",
           ],
         },
@@ -422,7 +413,7 @@ window.PORTAL = {
           sub: true,
           columns: 1,
           items: [
-            { title: "The WINGS research project", text: "Led by Spoor with NMBU (Norwegian University of Life Sciences), 2025 to 2028, with NOK 18 million in funding as an Innovation Project for the Industrial Sector. WINGS is developing and validating night-time monitoring for birds and bats, combining monitoring with mitigation, studying species behaviour and risk patterns, and turning the results into practical guidance. More at spoor.ai/wings." },
+            { title: "The WINGS research project", text: "Led by Spoor with NMBU (Norwegian University of Life Sciences), 2025 to 2028, as an Innovation Project for the Industrial Sector. WINGS is developing and validating night-time monitoring for birds and bats, combining monitoring with mitigation, studying species behaviour and risk patterns, and turning the results into practical guidance. More at spoor.ai/wings." },
           ],
         },
         {
@@ -552,20 +543,6 @@ window.PORTAL = {
           ],
         },
         {
-          type: "cards",
-          for: "both",
-          heading: "What's coming next",
-          columns: 3,
-          items: [
-            { tag: "In development", title: "Real-time alerts", text: "Processing on site means we can flag bird activity within seconds. Your client decides what happens next, from notifying an operator to starting a shutdown procedure." },
-            { tag: "In development", title: "Data as it happens", text: "Detections stream from the site as they are made, instead of arriving in batches." },
-            { tag: "In development", title: "Study design tool", text: "Place cameras on a map and see the volume covered for each species before anything is installed." },
-            { tag: "In development", title: "Built for ecologists", text: "A new platform designed around how consultants analyse data, with site context behind every number." },
-            { tag: "In development", title: "Better species ID", text: "Combining how a bird looks, how it flies, and which species are likely at that site and season." },
-            { tag: "In development", title: "Sample datasets", text: "Anonymised AAM and TIM data your team can explore before a project starts." },
-          ],
-        },
-        {
           type: "accordion",
           for: "both",
           heading: "Questions we often get",
@@ -632,6 +609,7 @@ window.PORTAL = {
           file: "",
         },
         {
+          id: "case-studies",
           title: "Case studies and references",
           for: "both",
           type: "PDF",
