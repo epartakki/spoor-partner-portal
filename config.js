@@ -49,9 +49,9 @@ window.PORTAL = {
   // Pixel sizes of images, so the page does not jump while they load.
   // Optional: a new image works without an entry here.
   imageSizes: {
-    "assets/hero.jpg": [1920, 1080],
-    "assets/survey.jpg": [1952, 1644],
-    "assets/buoysectors.jpg": [1952, 1644],
+    "assets/hero-kittiwake.webp": [1961, 1103],
+    "assets/survey.png": [1952, 1232],
+    "assets/buoysectors.png": [1952, 1232],
     "assets/when_used.png": [2796, 1116],
     "assets/app_video.jpg": [2000, 1594],
     "assets/two_views.png": [3264, 912],
@@ -115,8 +115,8 @@ window.PORTAL = {
         {
           type: "hero",
           for: "both",
-          image: "assets/hero.jpg",
-          alt: "Offshore wind turbine with a Spoor detection card for a European Herring Gull",
+          image: "assets/hero-kittiwake.webp",
+          alt: "Offshore wind farm under a blue sky. A Black-legged Kittiwake is tracked past a turbine, with a Spoor detection card showing no interaction, its time, direction, speed, height and the weather.",
           heading: "Evidence your clients and regulators can check",
           text: "Every figure we report traces back to a video clip, a track and a record of how it was produced.",
         },
@@ -126,9 +126,9 @@ window.PORTAL = {
           heading: "The gap in today's survey data",
           options: [
             {
-              label: "Boat and aerial surveys",
-              image: "assets/survey.jpg",
-              alt: "Survey transects flown by plane and boat, a few days a year",
+              label: "Vessel and aerial surveys",
+              image: "assets/survey.png",
+              alt: "Survey transects covered back and forth by plane and by vessel",
               heading: "A few snapshots across the year",
               points: [
                 "Broad coverage across the whole site",
@@ -139,9 +139,9 @@ window.PORTAL = {
               note: "Good for the spatial picture.",
             },
             {
-              label: "Fixed cameras",
-              image: "assets/buoysectors.jpg",
-              alt: "Two buoy-mounted cameras watching fixed sectors all year",
+              label: "Cameras on buoys",
+              image: "assets/buoysectors.png",
+              alt: "Two buoy-mounted cameras, each watching two fixed sectors of airspace",
               heading: "Continuous, all year round",
               points: [
                 "Every daylight hour, in the same airspace",

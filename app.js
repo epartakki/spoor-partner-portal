@@ -6,6 +6,8 @@
 
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => (k in vars ? vars[k] : ""));
+  // The Spoor button's "target": a 28 x 28 corner-tick frame around an arrow (design system).
+  const target = (diagonal) => `<span class="btn-target" aria-hidden="true"><svg viewBox="0 0 28 28" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8V1h7M20 1h7v7M27 20v7h-7M8 27H1v-7"/>${diagonal ? '<path d="M10 18l8-8M11.5 10H18v6.5"/>' : '<path d="M7 14h14M16 9l5 5-5 5"/>'}</svg></span>`;
   const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const num = (n) => Number(n).toLocaleString("en-GB");
 
@@ -63,7 +65,6 @@
     document.body.dataset.segment = seg;
     $("#login").hidden = true;
     $("#app").hidden = false;
-    $("#segment-pill").textContent = P.segments[seg].name;
     $("#nav").innerHTML = P.sections.map((s) => `<a href="#/${s.id}" data-id="${s.id}">${esc(s.title)}</a>`).join("");
     measureTopbar();
     render();
@@ -213,7 +214,7 @@
   function linkHtml(l) {
     if (!l || !l.href) return "";
     const ext = l.newTab ? ` target="_blank" rel="noopener"` : "";
-    return `<p class="block-link"><a class="cta-link" href="${esc(l.href)}"${ext}>${esc(l.label || l.href)}<span class="cta-arrow" aria-hidden="true">${l.newTab ? "&#8599;" : "&#8594;"}</span>${l.newTab ? `<span class="sr-only"> ${esc(U.newTab)}</span>` : ""}</a></p>`;
+    return `<p class="block-link"><a class="btn" href="${esc(l.href)}"${ext}>${esc(l.label || l.href)}${l.newTab ? `<span class="sr-only"> ${esc(U.newTab)}</span>` : ""}${target(l.newTab)}</a></p>`;
   }
   const h = (level, text, cls = "") => `<h${level} class="${cls}">${esc(text)}</h${level}>`;
   const tagHtml = (t) => `<span class="tag ${t === "Live" ? "tag-live" : "tag-highlight"}">${esc(t)}</span>`;
@@ -222,7 +223,7 @@
     hero: (b, c) => `
       <div class="hero">
         ${img(b.image, b.alt, 'fetchpriority="high"')}
-        <div class="hero-panel">${c.head()}<p>${esc(b.text)}</p></div>
+        <div class="hero-text">${c.head()}<p>${esc(b.text)}</p></div>
       </div>`,
 
     prose: (b, c) => {
@@ -354,7 +355,7 @@
     checklist: (b, c) => {
       const pid = `checklist-${c.key}`;
       return `
-        ${b.collapsed ? `<button type="button" class="btn btn-primary" data-reveal aria-expanded="false" aria-controls="${pid}">${esc(b.revealLabel || b.buttonLabel)}</button>` : ""}
+        ${b.collapsed ? `<button type="button" class="btn btn-primary" data-reveal aria-expanded="false" aria-controls="${pid}">${esc(b.revealLabel || b.buttonLabel)}${target()}</button>` : ""}
         <div class="checklist" id="${pid}" ${b.collapsed ? "hidden" : ""}>
           ${c.head()}
           ${b.intro ? `<p class="block-intro">${esc(b.intro)}</p>` : ""}
@@ -366,7 +367,7 @@
                 <input type="text" id="ckt-${c.key}-${i}" aria-labelledby="ckl-${c.key}-${i}" placeholder="${esc(it.placeholder || "")}" data-t="${i}">
               </div>`).join("")}
             <p class="error" role="alert" hidden>${esc(U.checklistNothingTicked)}</p>
-            <div><button class="btn btn-primary" type="submit">${esc(b.buttonLabel)}</button></div>
+            <div><button class="btn btn-primary" type="submit">${esc(b.buttonLabel)}${target()}</button></div>
             <p class="muted small">${esc(U.checklistMailNote)}</p>
           </form>
         </div>`;
@@ -405,7 +406,7 @@
         ${b.steps.length > 1 ? `<p class="picker-count">${esc(fill(U.stepOf, { n: i + 1, total: b.steps.length }))}</p>` : ""}
         <h${level} class="picker-q" tabindex="-1">${esc(step.question)}</h${level}>
         <div class="picker-answers">
-          ${step.answers.map((a) => `<button type="button" class="btn btn-soft" data-answer="${esc(a.value)}">${esc(a.label)}</button>`).join("")}
+          ${step.answers.map((a) => `<button type="button" class="btn btn-soft" data-answer="${esc(a.value)}">${esc(a.label)}${target()}</button>`).join("")}
         </div>
       </div>`;
   }
@@ -419,7 +420,7 @@
         <p>${esc(r.text)}</p>
         ${r.note ? `<p class="block-note">${esc(r.note)}</p>` : ""}
         <div class="picker-actions">
-          ${r.link ? `<a class="btn btn-primary" href="${esc(r.link)}">${esc(r.linkLabel || r.link)}</a>` : ""}
+          ${r.link ? `<a class="btn btn-primary" href="${esc(r.link)}">${esc(r.linkLabel || r.link)}${target()}</a>` : ""}
           <button type="button" class="link-btn" data-restart>${esc(U.startAgain)}</button>
         </div>
       </div>`;
@@ -437,15 +438,15 @@
     ].join("");
 
     const action = ready
-      ? `<a class="btn btn-primary" href="${esc(a.file)}" download>${esc(U.download)}</a>`
-      : hasSnippets ? "" : `<button class="btn btn-ghost" disabled>${esc(U.notAvailable)}</button>`;
+      ? `<a class="btn btn-primary" href="${esc(a.file)}" download>${esc(U.download)}${target()}</a>`
+      : hasSnippets ? "" : `<button class="btn btn-ghost" disabled>${esc(U.notAvailable)}${target()}</button>`;
 
     const snippets = hasSnippets
       ? `<div class="snippets">${a.snippets.map((s, i) => `
           <div class="snippet">
             <div class="snippet-head">
               <h4>${esc(s.title)}</h4>
-              <button class="btn btn-soft" data-copy="${i}" ${s.text ? "" : "disabled"}>${esc(U.copy)}</button>
+              <button class="btn btn-soft btn-sm" data-copy="${i}" ${s.text ? "" : "disabled"}>${esc(U.copy)}</button>
             </div>
             <div class="snippet-body ${s.text ? "" : "empty"}" data-text="${i}">${s.text ? esc(s.text) : esc(U.textComingSoon)}</div>
           </div>`).join("")}</div>`
@@ -472,7 +473,7 @@
             <div><h2>${esc(c.name)}</h2><p>${esc(c.role)}</p></div>
           </div>
           <p>${esc(U.contactBlurb)}</p>
-          <div class="actions"><a class="btn btn-soft" href="mailto:${esc(c.email)}">${esc(c.email)}</a></div>
+          <div class="actions"><a class="btn btn-soft" href="mailto:${esc(c.email)}">${esc(c.email)}${target()}</a></div>
         </article>
         <article class="card">
           <h2>${esc(U.requestHeading)}</h2>
@@ -491,7 +492,7 @@
             <div class="field"><label for="r-msg">${esc(U.requestDetails)}</label>
               <textarea id="r-msg" required placeholder="${esc(U.requestPlaceholder)}"></textarea>
             </div>
-            <div><button class="btn btn-primary" type="submit">${esc(U.requestSubmit)}</button></div>
+            <div><button class="btn btn-primary" type="submit">${esc(U.requestSubmit)}${target()}</button></div>
             <p class="muted small" style="margin:0">${esc(U.requestNote)}</p>
           </form>
         </article>

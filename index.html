@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <meta name="theme-color" content="#FAF5F0" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#17052D" media="(prefers-color-scheme: dark)">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&family=Geist:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Geist:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -23,7 +23,7 @@
         <label for="code">Access code</label>
         <input id="code" name="code" type="text" required spellcheck="false" autocapitalize="characters">
         <p id="login-error" class="error" role="alert" hidden>That code was not recognised. Check it and try again.</p>
-        <button type="submit" class="btn btn-primary">Sign in</button>
+        <button type="submit" class="btn btn-primary">Sign in<span class="btn-target" aria-hidden="true"><svg viewBox="0 0 28 28" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8V1h7M20 1h7v7M27 20v7h-7M8 27H1v-7"/><path d="M7 14h14M16 9l5 5-5 5"/></svg></span></button>
       </form>
       <p class="muted small">No code yet? Email <a id="login-contact" href="#"></a></p>
     </div>
@@ -35,8 +35,7 @@
       <div class="topbar-inner">
         <a class="brand" href="#/why"><span class="logo-chip"><img class="logo" src="assets/spoor-logo.svg" alt="Spoor" width="126" height="28"></span><span class="brand-sub">Partner Portal</span></a>
         <div class="topbar-right">
-          <span id="segment-pill" class="pill"></span>
-          <button id="logout" class="btn btn-ghost">Sign out</button>
+          <button id="logout" class="btn btn-soft btn-sm">Sign out<span class="btn-target" aria-hidden="true"><svg viewBox="0 0 28 28" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8V1h7M20 1h7v7M27 20v7h-7M8 27H1v-7"/><path d="M7 14h14M16 9l5 5-5 5"/></svg></span></button>
         </div>
       </div>
       <nav id="nav" class="nav" aria-label="Sections"></nav>
